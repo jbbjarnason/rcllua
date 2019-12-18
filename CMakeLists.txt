@@ -39,5 +39,14 @@ ament_target_dependencies(rcllua rclcpp)
 target_link_libraries(rcllua ${LUA_LIBRARIES})
 include_directories(rcllua ${LUA_INCLUDE_DIR})
 
+add_executable(rcllua_tests test/rcllua_test.cpp)
+target_include_directories(rcllua_tests PRIVATE include)
+target_include_directories(rcllua_tests PRIVATE src)
+ament_target_dependencies(rcllua_tests rclcpp)
+target_link_libraries(rcllua_tests ${LUA_LIBRARIES})
+include_directories(rcllua_tests ${LUA_INCLUDE_DIR})
+target_link_libraries(rcllua_tests rcllua)
+
+
 install(TARGETS rcllua
         LIBRARY DESTINATION lib/${PROJECT_NAME})
