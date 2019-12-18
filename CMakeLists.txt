@@ -7,9 +7,7 @@ if(NOT CMAKE_C_STANDARD)
 endif()
 
 # Default to C++14
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
-endif()
+set(CMAKE_CXX_STANDARD 17)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -18,6 +16,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(Lua REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -31,3 +30,14 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
+add_library(rcllua SHARED src/rcllua.cpp)
+target_include_directories(rcllua PRIVATE include)
+target_include_directories(rcllua PUBLIC include/rcllua)
+
+ament_target_dependencies(rcllua rclcpp)
+target_link_libraries(rcllua ${LUA_LIBRARIES})
+include_directories(rcllua ${LUA_INCLUDE_DIR})
+
+install(TARGETS rcllua
+        LIBRARY DESTINATION lib/${PROJECT_NAME})
