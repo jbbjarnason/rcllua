@@ -31,6 +31,7 @@ endif()
 
 ament_package()
 
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
 add_library(rcllua SHARED src/rcllua.cpp)
 target_include_directories(rcllua PRIVATE include)
 target_include_directories(rcllua PUBLIC include/rcllua)
