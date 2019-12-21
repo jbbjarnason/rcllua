@@ -17,6 +17,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(Lua REQUIRED)
+find_package(std_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -31,23 +32,19 @@ endif()
 
 ament_package()
 
+#Make sure that modules are loaded
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 add_library(rcllua SHARED src/rcllua.cpp)
 target_include_directories(rcllua PRIVATE include)
 target_include_directories(rcllua PUBLIC include/rcllua)
-
-ament_target_dependencies(rcllua rclcpp)
+ament_target_dependencies(rcllua rclcpp std_msgs)
 target_link_libraries(rcllua ${LUA_LIBRARIES})
 include_directories(rcllua ${LUA_INCLUDE_DIR})
 
-add_executable(rcllua_tests test/rcllua_test.cpp)
-target_include_directories(rcllua_tests PRIVATE include)
-target_include_directories(rcllua_tests PRIVATE src)
-ament_target_dependencies(rcllua_tests rclcpp)
-target_link_libraries(rcllua_tests ${LUA_LIBRARIES})
-include_directories(rcllua_tests ${LUA_INCLUDE_DIR})
-target_link_libraries(rcllua_tests rcllua)
 
+add_subdirectory(test)
 
 install(TARGETS rcllua
         LIBRARY DESTINATION lib/${PROJECT_NAME})

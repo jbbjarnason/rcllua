@@ -35,7 +35,30 @@ sol::table open_rcl(sol::this_state L) {
     module.new_usertype<Node>("Node",
             "new", sol::constructors<
                     Node(const std::string&, NodeOptions&),
-                    Node(const std::string&, const std::string&, NodeOptions&)>()
+                    Node(const std::string&, const std::string&, NodeOptions&)>(),
+            "get_name", &Node::get_name,
+            "get_namespace", &Node::get_namespace,
+            "get_logger", &Node::get_logger, // TODO: finish
+            "create_callback_group", &Node::create_callback_group, // TODO: finish
+            "get_callback_groups", &Node::get_callback_groups, // TODO: finish
+            "create_publisher", [lua](Node* node, std::string typeName, std::string topic){
+                std::cout << "creating " << typeName << std::endl;
+                if (typeName == "Byte") {
+                    auto pub = node->create_publisher<std_msgs::msg::Byte>(topic, 10);
+//                    lua.new_usertype<rclcpp::Publisher<std_msgs::msg::Byte>>("PublisherBase",
+//                            "new", sol::no_constructor,
+//                            "_create", [node, topic](){
+//                                return node->create_publisher<std_msgs::msg::Byte>(topic, 10);
+//                            },
+//                            "publish", &rclcpp::Publisher<std_msgs::msg::Byte>::publish);
+//                    sol::usertype<rclcpp::PublisherBase> foo = lua.new_usertype<rclcpp::PublisherBase>(pub);
+                    return;
+                }
+//                return node->create_publisher<>();
+            }
+//            "create_publisher", &Node::create_publisher // TODO: finish
+//            "create_subscription", &Node::create_subscription // TODO: finish
+// TODO: ... finish interface
                     );
 
 
